@@ -2,6 +2,7 @@
 
 
 #include <Wire.h> //I2C library
+#include <avr/pgmspace.h>
 
 #define HI_STRINGADDR 0x00
 #define LO_STRINGADDR 0x00
@@ -15,16 +16,16 @@
 // where does our characterMap start in the ASCII code
 #define MAP_START      32
 
-//strings are stored from 0x00 to 0x7F
+//strings are stored in 0x00 from 0x00 to 0x7F
 //enough room for up to 7, 18 byte strings, using 126 bytes of space with 127 total
 
-//character maps are stored from 0x80
+//character maps are stored in 0x01 from 0x00 to 0xFF
 //each character map needs up to 25 bits of space, plus 3 for the width value, so 28 bits, then rounded up to 32
 //so each character map has 4 bytes allocated to it
 
-//sorted by ascii table decimal values 32 to 126, - 32 so it starts at 0 in eeprom
-//enough room for 94 character maps, using 376 bytes of space
-//yeah this wont all fit in the attiny44's 256 byte eeprom, we need this external chip
+//sorted by ascii table decimal values 32 to 96, - 32 so it starts at 0 in eeprom
+//enough room for 64 character maps, using 256 bytes of space
+
 
 
 void setup() {
@@ -32,11 +33,54 @@ void setup() {
     Wire.begin();
     
     
-    unsigned long character = 0b01101001111110011001;
+
     
-    writeChar('A', character, 4);
-    delay(10);
-    readChar('A');
+/*     writeChar(' ', 0b00000000000000, 3);
+    writeChar('!', 0b11101, 1);
+    writeChar((char)34, 0b101101000000000, 3);
+    writeChar('0', 0b11111001100110011111, 4);
+    writeChar('1', 0b1101010101, 2);
+    writeChar('2', 0b11100001011010001111, 4);
+    writeChar('3', 0b11100001011100011111, 4);
+    writeChar('4', 0b10011001111100010001, 4);
+    writeChar('5', 0b11111000111000011110, 4);
+    writeChar('6', 0b11101000111110011111, 4);
+    writeChar('7', 0b11110001001001000100, 4);
+    writeChar('8', 0b01101001011010010110, 4);
+    writeChar('9', 0b11111001111100010111, 4);
+    
+    writeChar('?', 0b111001011000010, 3);
+    writeChar('A', 0b11101001111110011001, 4);
+    writeChar('B', 0b11101010111110011110, 4);
+    writeChar('C', 0b011100100100011, 3);
+    writeChar('D', 0b11101001100110011110, 4);
+    writeChar('E', 0b11111000111010001111, 4);
+    writeChar('F', 0b11101000111010001000, 4);
+    writeChar('G', 0b01111000101110010110, 4);
+    writeChar('H', 0b10011001111110011001, 4);
+    writeChar('I', 0b111010010010111, 3);
+    writeChar('J', 0b00010001000110010110, 4);
+    writeChar('K', 0b10101010111010011001, 4);
+    writeChar('L', 0b10001000100010001111, 4);
+    writeChar('M', 0b1111010101101011010110101, 5);
+    writeChar('N', 0b11101001100110011001, 4);
+    writeChar('O', 0b01101001100110010110, 4);
+    writeChar('P', 0b11111001111110001000, 4);
+    writeChar('Q', 0b11111001100110101101, 4);
+    writeChar('R', 0b11101001111010011001, 4);
+    writeChar('S', 0b01111000011000011110, 4);
+    writeChar('T', 0b111010010010010, 3);
+    writeChar('U', 0b10011001100110011110, 4);
+    writeChar('V', 0b10011001101010100100, 4);
+    writeChar('W', 0b1000110101101011010111110, 5);
+    writeChar('X', 0b10011001011010011001, 4);
+    writeChar('Y', 0b10011001111100011111, 4);
+    writeChar('Z', 0b11110001011010001111, 4);
+    writeChar('_', 0b00000000000000001111, 4); */
+    
+    
+    readChar(' ');
+    readChar('_');
     
     
     //strings();
@@ -56,27 +100,13 @@ void readChar(char theChar) {
     
     //the character's address in eeprom starts at 0x0100, plus the character's position in ascii, times MAPSIZE (4)
     //so every 4 bytes, there is a character map
-    byte hiAddr = HI_CHARADDR;
     byte lowAddr = LOW_CHARADDR;
     
-    //if the character we are writing will not fit in the first 256 bytes (256/4=64) in the lower character map address
-    //(this means only 64 character maps will fit in a single upper address)
-    if(characterPos >= 64) {
-        //increase the upper address by 1
-        hiAddr++;
-        
-        //set the lower address according to position in the 0-indexed ascii table
-        //then subtract 64 since we had to increase our high address
-        lowAddr = LOW_CHARADDR + (characterPos * MAPSIZE);
-        lowAddr = lowAddr - 64;
-    }
-    else {
-        //else, just set the lower address according to position in the 0-indexed ascii table
-        lowAddr = LOW_CHARADDR + (characterPos * MAPSIZE);
-    }
+    //set the lower address according to position in the 0-indexed ascii table
+    lowAddr = LOW_CHARADDR + (characterPos * MAPSIZE);
     
     //combine both high and low addresses together to get your final address
-    int characterAddr = hiAddr << 8;
+    int characterAddr = HI_CHARADDR << 8;
     characterAddr = characterAddr | lowAddr;
     
     //prepare the array for storing the data we get from the eeprom
