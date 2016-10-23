@@ -1,0 +1,1 @@
+Testing and developing code on my arduino before porting it over to the attiny used for this project

@@ -1,0 +1,1 @@
+Final attiny compatible code goes here
