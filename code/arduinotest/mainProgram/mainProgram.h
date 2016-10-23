@@ -11,6 +11,8 @@
 
 #define NUMOFLEDS 40
 
+#define MAXSTRINGLENGTH
+
 // where does our characterMap start in the ASCII code
 #define MAP_START      32
 

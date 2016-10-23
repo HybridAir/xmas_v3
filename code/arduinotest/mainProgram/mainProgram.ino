@@ -1,4 +1,5 @@
 //xmas_v3 - HybridAir
+//todo: debounce
 
 #include <Wire.h>
 #include "mainProgram.h"
@@ -17,14 +18,14 @@ void setup() {
     pinMode(9, INPUT);
     initDisplay();
     initEeprom();
-    switchString();     //temp
+    switchMessage();     //temp
 }
 
 
 void loop() {
     
     checkBtn();
-    showString(); 
+    showMessage(); 
     
 }
 
