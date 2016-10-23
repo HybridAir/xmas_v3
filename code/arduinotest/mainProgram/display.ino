@@ -15,7 +15,7 @@
 
 #define NUMOFLEDS 40 */
 
-void initLeds() {
+void initDisplay() {
     pinMode(A, INPUT);
    pinMode(B, INPUT);
    pinMode(C, INPUT);
