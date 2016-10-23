@@ -5,15 +5,6 @@
 #include "mainProgram.h"
 
 
-/* // where does our characterMap start in the ASCII code
-#define MAP_START      32
-
-#define DISPLAY_WIDTH  8
-#define DISPLAY_HEIGHT 5
-
-// the text to display
-#define DISPLAY_STRING "HELLO WORLD" */
-
 // maps characters to their 4x5 grid 
 unsigned long characterMap[59];
 
@@ -23,8 +14,6 @@ int length = sizeof(myString);
 //timer stuff
 unsigned long currentMillis = 0;
 unsigned long previousMillis = 0;
-/* #define TEXTSPEED 100
-#define FIRSTDELAY  1000 */
 
 // The offset of our string in the display
 int offset = 0;
@@ -32,17 +21,21 @@ int offset = 0;
 
 bool firstRun = true;
 
+bool prevBtn = false;
+char currentString = 0;             //currently selected string
+
+byte currentStringLength = 18;
+
 // set up a character in the characterMap
 void Chr(char theChar, unsigned long value) {
   characterMap[theChar - MAP_START] = value;
+  
 }
 
 void setup() {
-    //initalize charliepins
    initLeds();
    
-   //init characters
-   Chr('A', 0b01101001111110011001);
+/*    Chr('A', 0b01101001111110011001);
   Chr('B', 0b11101001111010011110);
   Chr('C', 0b01111000100010000111);
   Chr('D', 0b11101001100110011110);
@@ -75,7 +68,7 @@ void setup() {
   Chr('1', 0b01100010001000100111);
   Chr('2', 0b11110001111010001111);
   Chr('3', 0b11100001011000011110);
-  Chr('6', 0b11101000111110011111);
+  Chr('6', 0b11101000111110011111); */
 
   
   pinMode(9, INPUT);
@@ -85,9 +78,6 @@ void setup() {
 }
 
 
-bool prevBtn = false;
-char currentString = 0;             //currently selected string
-// #define NUMOFSTRINGS 4           //4 strings saved in eeprom, 0 inclusive as usual
 
 
 
@@ -104,9 +94,7 @@ void loop() {
             }
             
             switchString();
-            //Serial.println(currentString, DEC);
-            //maybe add a debouncing delay or something
-            //maybe a hardware one if space is limited
+            //need to add software debouncing here
         }
     }
     
@@ -117,35 +105,23 @@ void loop() {
 }
 
 
-// #define STRINGLENGTH 18          //largest string is 18 bytes long, so they all need to be
-byte currentStringLength = 18;
 
 
 void switchString() {
     firstRun = true;
     offset = 0;
     
-    //for(char i = 0; i <= 4; i++) {
-        char stringAddress = STRINGLENGTH * currentString;
-        //Serial.println(18 * i, DEC);
-        byte stringIndex = 0;
-        for(char y = stringAddress; y < stringAddress + STRINGLENGTH; y++) {
-            byte b = i2c_eeprom_read_byte(0x50, y);
-            
-            if(b != 0) {
-                myString[stringIndex] = b;
-                stringIndex++;
-                length = stringIndex + 1;
-            }
-            
-            
-            //Serial.print((char)b); //print content to serial port
-            //Serial.print(".");
-            //Serial.print(y, DEC);
+    char stringAddress = STRINGLENGTH * currentString;
+    byte stringIndex = 0;
+    for(char y = stringAddress; y < stringAddress + STRINGLENGTH; y++) {
+        byte b = i2c_eeprom_read_byte(0x50, y);
+        
+        if(b != 0) {
+            myString[stringIndex] = b;
+            stringIndex++;
+            length = stringIndex + 1;
         }
-        //Serial.println(length, DEC);
-        //Serial.println("");
-    //}
+    }
 }
 
 
@@ -224,10 +200,6 @@ void renderString(char *theString, int offset) {
 
 // render a character on the given offset
 void renderCharacter(char theChar, int charOffset) {
-/*   if (charOffset <= -DISPLAY_WIDTH || charOffset > DISPLAY_WIDTH) {
-    
-    return;
-  } */
 
   unsigned long graphic = characterMap[theChar - MAP_START];
 
