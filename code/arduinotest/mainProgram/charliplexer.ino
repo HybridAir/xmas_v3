@@ -5,7 +5,7 @@
 
 
 // I skipped F because F isn't allowed
-#define A 2
+/* #define A 2
 #define B 3
 #define C 4
 #define D 5
@@ -13,7 +13,7 @@
 #define G 7
 #define H 8
 
-#define NUMOFLEDS 40
+#define NUMOFLEDS 40 */
 
 void initLeds() {
     pinMode(A, INPUT);

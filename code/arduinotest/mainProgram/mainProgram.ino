@@ -2,15 +2,17 @@
 
 
 #include <Wire.h> //I2C library
+#include "mainProgram.h"
 
-// where does our characterMap start in the ASCII code
+
+/* // where does our characterMap start in the ASCII code
 #define MAP_START      32
 
 #define DISPLAY_WIDTH  8
 #define DISPLAY_HEIGHT 5
 
 // the text to display
-#define DISPLAY_STRING "HELLO WORLD"
+#define DISPLAY_STRING "HELLO WORLD" */
 
 // maps characters to their 4x5 grid 
 unsigned long characterMap[59];
@@ -21,8 +23,8 @@ int length = sizeof(myString);
 //timer stuff
 unsigned long currentMillis = 0;
 unsigned long previousMillis = 0;
-#define TEXTSPEED 100
-#define FIRSTDELAY  1000
+/* #define TEXTSPEED 100
+#define FIRSTDELAY  1000 */
 
 // The offset of our string in the display
 int offset = 0;
@@ -85,7 +87,7 @@ void setup() {
 
 bool prevBtn = false;
 char currentString = 0;             //currently selected string
-#define NUMOFSTRINGS 4           //4 strings saved in eeprom, 0 inclusive as usual
+// #define NUMOFSTRINGS 4           //4 strings saved in eeprom, 0 inclusive as usual
 
 
 
@@ -115,7 +117,7 @@ void loop() {
 }
 
 
-#define STRINGLENGTH 18          //largest string is 18 bytes long, so they all need to be
+// #define STRINGLENGTH 18          //largest string is 18 bytes long, so they all need to be
 byte currentStringLength = 18;
 
 
