@@ -15,13 +15,12 @@
 #define FIRSTDELAY  1000
 
 #define NUMOFSTRINGS 4           //4 strings saved in eeprom, 0 inclusive as usual
-#define STRINGLENGTH 18          //largest string is 18 bytes long, so they all need to be
+#define MAXSTRINGLENGTH 18          //largest string is 18 bytes long, so they all need to be
 
 
 //EEPROM
 #define HI_STRINGADDR 0x00
 #define LO_STRINGADDR 0x00
-#define STRINGLENGTH 18
 
 #define HI_CHARADDR 0x01        //starting high address for character maps
 #define LOW_CHARADDR 0x00       //starting low address in eeprom for character maps

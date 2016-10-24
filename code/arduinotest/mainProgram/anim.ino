@@ -2,12 +2,6 @@
 //TODO: add stuff besides text scrolling
 
 
-//try combining these two if free memory or storage gets low
-// byte charMap0[5] = {0,0,0,0,0};
-// byte charMap1[5] = {0,0,0,0,0};
-// byte charMap2[5] = {0,0,0,0,0};
-
-
 //only 3 unique characters can be possibly displayed at once, since there a 1 px space between characters
 //so we only need room to temporarily store at most 3 characters
 byte charMaps[3][DISPLAY_HEIGHT] = {
@@ -16,21 +10,31 @@ byte charMaps[3][DISPLAY_HEIGHT] = {
     {0,0,0,0,0}
 };
 
-byte charWidths[3] = {
-    0, 0, 0
+//char widths with their cooresponding character are stored in here
+//the character stored here is only used for comparing
+byte charWidths[3][2] = {
+    {0,0},
+    {0,0},
+    {0,0}
 };
 
-// byte charWidth0 = 0;
-// byte charWidth1 = 0;
-// byte charWidth2 = 0;
+//current character map string location index things are stored here
+//ie the string renderer goes through this array to find which character goes where
+//it's 4 becuase that's how many characters (1px wide + 1px space) could possibly fit on the display at once
+byte charIndexes[4] = {
+    0, 0, 0, 0
+};
+
+byte charAmount = 0;
 
 
-char currentMessage[18] = "";
-byte currentStringLength = sizeof(currentMessage);
+char currentMessage[MAXSTRINGLENGTH] = "";
+byte currentStringLength = MAXSTRINGLENGTH;
 
 
 // The offset of our string in the display
 int offset = 0;
+int lastOffset = 0;
 
 
 //byte currentStringLength = 18;
@@ -59,13 +63,14 @@ void switchMessage() {
     restartString = true;
     offset = 0;
     currentIndex = 0;
+    charAmount = 0;
     
     //calculate the address where the new string is stored at in eeprom
-    char stringAddress = STRINGLENGTH * currentString;
+    char stringAddress = MAXSTRINGLENGTH * currentString;
     
     //for each byte in the string's storage space
     byte stringIndex = 0;
-    for(char y = stringAddress; y < stringAddress + STRINGLENGTH; y++) {
+    for(char y = stringAddress; y < stringAddress + MAXSTRINGLENGTH; y++) {
         //read the byte out and store it in our current string container array
         byte b = i2c_eeprom_read_byte(0x50, y);
         
@@ -78,58 +83,41 @@ void switchMessage() {
     }
     
     
+    //show the beginning of the string at offset 0
+    //renderString(0);
+    //THIS ISN'T NEEDED, SHOW STRING DOES THIS ^^^^^
+    //and render stirng does the bottom vvvvvvvv
     
     
-    //GET THE FIRST FEW CHARACTER MAPS OUT AND READY
+/*     //GET THE FIRST FEW CHARACTER MAPS OUT AND READY
     byte i = 0;
     stringIndex = 0;
     
     //while there is still physical room left for characters to be displayed (plus 1 pixel space between)
     //ie if a character fits on the display and its 1 px space fills the last column, dont get anymore
     while(i < DISPLAY_WIDTH - 1) {
-        //read the char map out to our global array
-        readChar(currentMessage[stringIndex], stringIndex);
-        //add the character's width plus 1px space to i 
-        i = i + charWidths[stringIndex] + 1;
-    }
-    
-    
-    
-    
-/*     byte i = 0;
-    stringIndex = 0;
-    //while there is still physical room left for characters to be displayed (with 1 pixel space)
-    //so if a character fits on the display and it's 1 px space fills the last column, dont get anymore
-    while(i < DISPLAY_WIDTH - 1) {
+        bool skip = false;
         
-        byte currentChar = currentMessage[stringIndex];
-        
-        //get the current character data we need off of the eeprom
-        byte charWidth;
-        unsigned long rawChar;
-        readChar(currentChar, &rawChar, &charWidth);
-        charWidths[stringIndex] = charWidth;
-        
-        //depending on the value of charWidths[stringIndex], make a binary value the same length to use later
-        //ie if charWidths[stringIndex] is 4, then output 0b1111
-        byte widthMerge = 0x1;
-        for(int x = 0; x < charWidths[stringIndex]; x++) {
-            widthMerge = (widthMerge << 0x1) | 0x1;
-        }
-
-        
-        //for each ascending row of the display (since all characters are DISPLAY_HEIGHT tall)
-        for(byte u = DISPLAY_HEIGHT; u > 0; u--) {
-            //take out the lowest charWidths[stringIndex] amount of bits, and put them in the global map location
-            charMaps[stringIndex][u] = rawChar & widthMerge;
-            //move the local over charWidths[stringIndex] amount of bits
-            rawChar = rawChar >> widthMerge;
-            //this is done in decending order because the lowest bit in the charMap is at the bottom of the map
+        //check if we are going to duplicate one of the already downloaded characters
+        //for each character that we store on this device
+        for(char u = 0; u < 3; u++) {
+            //make sure not to compare with the current character
+            if(u != stringIndex) {
+                //if the new character matches the current downloaded one
+                if(charWidths[u][1] == currentMessage[stringIndex]) {
+                    //add the width of that one to i, and skip downloading any new ones
+                    i = i + charWidths[u][1];
+                    skip = true;
+                }
+            }
         }
         
-        stringIndex++;
-        i = i + charWidths[stringIndex] + 1;
-        
+        //
+        if(!skip) {
+            readChar(currentMessage[stringIndex], stringIndex);
+            //add the character's width plus 1px space to i 
+            i = i + charWidths[stringIndex][0] + 1;
+        }
     } */
 }
 
@@ -140,7 +128,7 @@ void showMessage() {
     //if this is the first time running this string, or it is being looped
     if(restartString) {
         //display the string at the last saved offset, and hold it there for some time
-        renderString(currentMessage, offset);
+        renderString(offset);
         if (millis() - currentMillis > FIRSTDELAY) {
             restartString = false;
         }
@@ -149,7 +137,7 @@ void showMessage() {
     else {
         
         //display the string at the last saved offset
-        renderString(currentMessage, offset);
+        renderString(offset);
         
         //after a preset delay, decrement the offset to scroll the string
         currentMillis = millis();
@@ -173,36 +161,103 @@ void showMessage() {
 }
 
 
+
+
+//REMOVE THE *THESTRING, IT'S REDUNDANT
 //renders the string on the given offset
 //all this really does is tell the character renderer where to put which characters and where
-void renderString(char *theString, int offset) {
+void renderString(int offset) {
     
-    
-    //currentIndex?
-    
-    
-    //check if the currentIndex character is still on the display
-    
-    //if the width of the character in the currentIndex, plus the current offset is greater/equal to 0
-    //which means if the first character to be displayed is still able to fit on the display
-/*     if() {
+    if(offset != lastOffset) {
+        lastOffset = offset;
         
-    } */
-    
-    //then diusplay
-    //else incremebet the index
-    
-    
-    
-    
-    //get char widths and maps out  
-    //for each pixel in the display's width
-/*     for(char i = 0; i < DISPLAY_WIDTH; i++) {
+        //check if we need to move on to the next part of the string 
+        //determine this by checking if the first character of the current section index to be displayed is still at least partially visible at the current offset
+        //so if the width of the character in the currentIndex, plus the current offset, is greater/equal to 0
+        if(charWidths[currentIndex][0] + offset >= 0) {
+            //gr8 go display it
+            //?????
+        }
+        //if not, move on to the next character section index fuck
+        else{
+            currentIndex++;
+            
+            //MAKE SURE YOU DON'T OVERFLOW THE STRING INDEX HERE YOU FUCK
+        }
         
-    } */
+        
+        
+        
+        
+
+        //get the first few character maps out and ready below
+        
+        //start just after the first character, since we already calculated that before
+        byte usedColumns = charWidths[currentIndex][0] + offset;
+        readChar(currentMessage[currentIndex], 0);
+        charIndexes[currentIndex] = currentIndex;
+        byte arrayIndex = 1;
+        
+        //while there is still physical room left for characters to be displayed (plus 1 pixel space between)
+        //ie if a character fits on the display and its 1 px space fills the last column, dont get anymore
+        while(usedColumns < DISPLAY_WIDTH - 1) {
+            bool skip = false;
+            
+            //check if we are going to duplicate one of the already downloaded characters
+            //for each character that we store on this device
+            //except for the very first
+            //if(arrayIndex != 0){              //NOT NEEDED           
+            for(char u = 0; u < 3; u++) {
+                //make sure not to compare with the current character
+                if(u != arrayIndex) {
+                    //if the new character matches the current downloaded one
+                    if(charWidths[u][1] == currentMessage[currentIndex + arrayIndex]) {
+                        //add the width of that one to i, and skip downloading any new ones
+                        usedColumns = usedColumns + charWidths[u][1];
+                         charIndexes[arrayIndex] = arrayIndex;
+                        skip = true;
+                    }
+                }
+            }
+            
+            //
+            if(!skip) {
+                readChar(currentMessage[currentIndex + arrayIndex], arrayIndex);
+                charIndexes[arrayIndex] = arrayIndex;
+                //add the character's width plus 1px space to i 
+                usedColumns = usedColumns + charWidths[currentIndex + arrayIndex][0] + 1;
+            }
+            
+            arrayIndex++;
+        }
+        
+        charAmount = arrayIndex;
+    }
     
     
-     int x = 0;
+    
+    //for each character we are able to display
+        //check in each array cell where that character is stored
+            //and then display that character
+            //and add the width to some extra offset value idk
+            
+    //actually fuck that
+    //when you are getting the charactes out
+    //fill a new array with the indexes of each required character, in order
+    
+
+    //now we need to get out characters into position for displaying
+    
+    for(char i = 0; i < charAmount; i++) {
+        //char out = charWidths[charIndexes[i][1]];
+        renderCharacter(charIndexes[i], offset + 1 + charWidths[charIndexes[i]][0]);
+    }
+    
+    
+    
+    
+    
+/*     int x = 0;
     char space = 0;
     int extra = 0;
     bool printing = true;
@@ -232,7 +287,7 @@ void renderString(char *theString, int offset) {
             if(x > 2) {
             printing = false;
         }
-    } 
+    }  */
     
     
     
@@ -294,9 +349,14 @@ void renderString(char *theString, int offset) {
 
 
 // render a character on the given offset
-/* void renderCharacter(char theChar, int charOffset) {
+void renderCharacter(byte charIndex, int charOffset) {
+    
+    //find the requested char
+    
+    
+    
 
-  unsigned long graphic = characterMap[theChar - MAP_START];
+/*   unsigned long graphic = characterMap[theChar - MAP_START];
 
     //go through each bit in the current character map and see if it needs to be displayed
     //iterate through each row, then column
@@ -309,5 +369,5 @@ void renderString(char *theString, int offset) {
             }
             graphic = graphic >> 1;
         }
-    }
-} */
+    } */
+}
