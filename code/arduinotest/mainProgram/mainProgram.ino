@@ -15,6 +15,8 @@ bool prevBtn = false;
 
 void setup() {
     
+    Serial.begin(9600);
+    
     pinMode(9, INPUT);
     initDisplay();
     initEeprom();

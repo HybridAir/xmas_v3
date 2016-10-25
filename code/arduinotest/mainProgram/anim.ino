@@ -2,30 +2,20 @@
 //TODO: add stuff besides text scrolling
 
 
-//only 3 unique characters can be possibly displayed at once, since there a 1 px space between characters
-//so we only need room to temporarily store at most 3 characters
-byte charMaps[3][DISPLAY_HEIGHT] = {
-    {0,0,0,0,0},
-    {0,0,0,0,0},
-    {0,0,0,0,0}
-};
+//only 4 characters can be possibly displayed at once, so only make room for that many
+//the smallest character is 1px wide with a 1px space between each, which gives us 8px (DISPLAY_WIDTH)
+//the first byte is the character's width value, the rest are the 5 character map rows
+byte charMaps[4][DISPLAY_HEIGHT + 1] = {0};
 
-//char widths with their cooresponding character are stored in here
-//the character stored here is only used for comparing
-byte charWidths[3][2] = {
-    {0,0},
-    {0,0},
-    {0,0}
-};
+//the amount of characters that are going to be displayed in the current cycle
+byte displayableChars = 0;
 
-//current character map string location index things are stored here
-//ie the string renderer goes through this array to find which character goes where
-//it's 4 becuase that's how many characters (1px wide + 1px space) could possibly fit on the display at once
-byte charIndexes[4] = {
-    0, 0, 0, 0
-};
+//the current starting position in the string that is being displayed, also referred to as the current cycle position
+//it defines where the current range of characters from a string that are to be displayed starts at
+//the position increments when the last drawn character completely scrolls out of the display
+byte stringPosition = 0;
 
-byte charAmount = 0;
+
 
 
 char currentMessage[MAXSTRINGLENGTH] = "";
@@ -59,6 +49,8 @@ void incrementAnim() {
 //reads a new message string out of eeprom, and prepares it for display
 void switchMessage() {
     
+    
+    
     //reset starting variables
     restartString = true;
     offset = 0;
@@ -68,17 +60,21 @@ void switchMessage() {
     //calculate the address where the new string is stored at in eeprom
     char stringAddress = MAXSTRINGLENGTH * currentString;
     
+    
+    
     //for each byte in the string's storage space
     byte stringIndex = 0;
     for(char y = stringAddress; y < stringAddress + MAXSTRINGLENGTH; y++) {
         //read the byte out and store it in our current string container array
-        byte b = i2c_eeprom_read_byte(0x50, y);
+        char b = i2c_eeprom_read_byte(0x50, y);
         
         //only read until you get to the end of the string, not the storage space
         if(b != 0) {
             currentMessage[stringIndex] = b;
             stringIndex++;
             currentStringLength = stringIndex + 1;
+            
+            
         }
     }
     
@@ -127,6 +123,7 @@ void showMessage() {
     
     //if this is the first time running this string, or it is being looped
     if(restartString) {
+        
         //display the string at the last saved offset, and hold it there for some time
         renderString(offset);
         if (millis() - currentMillis > FIRSTDELAY) {
@@ -149,12 +146,17 @@ void showMessage() {
             //if we are at the end of the string
             if(abs(offset) >= (currentStringLength * 5) - 6){
                 //cleanly loop the string
-                
                 reset_pins();                       //clear the screen to remove any artifacts
                 restartString = true;                    //restart the scrolling with a dealy
+                
+                currentIndex = 0;
+                
+                
                 offset = DISPLAY_WIDTH;             //not the first time, so bring the text in from the right
                 currentMillis = millis();
             }
+            
+            
         }
         
     }
@@ -185,6 +187,8 @@ void renderString(int offset) {
             //MAKE SURE YOU DON'T OVERFLOW THE STRING INDEX HERE YOU FUCK
         }
         
+        //Serial.println(currentIndex, DEC);
+        //MIGHT BE SOME TROUBLE HERE
         
         
         
@@ -197,6 +201,8 @@ void renderString(int offset) {
         readChar(currentMessage[currentIndex], 0);
         charIndexes[currentIndex] = currentIndex;
         byte arrayIndex = 1;
+        
+        Serial.println(charWidths[currentIndex][0], DEC);
         
         //while there is still physical room left for characters to be displayed (plus 1 pixel space between)
         //ie if a character fits on the display and its 1 px space fills the last column, dont get anymore

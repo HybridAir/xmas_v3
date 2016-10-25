@@ -79,11 +79,11 @@ void setup() {
     writeChar('_', 0b00000000000000001111, 4); */
     
     
-    readChar(' ');
-    readChar('_');
+    //readChar(' ');
+    //readChar('_');
     
     
-    //strings();
+    strings();
     Serial.println("Done");
 
 }
@@ -236,17 +236,17 @@ void strings() {
 
     delay(10);
     
-/*     for(char i = 0; i <= 4; i++) {
-        char LO_STRINGADDR = 18 * i;
+    for(char i = 0; i <= 4; i++) {
+        char addr = 18 * i;
         //Serial.println(18 * i, DEC);
-        for(char y = LO_STRINGADDR; y < LO_STRINGADDR + 18; y++) {
+        for(char y = addr; y < addr + 18; y++) {
             byte b = i2c_eeprom_read_byte(0x50, y);
             Serial.print((char)b); //print content to serial port
             //Serial.print(".");
             //Serial.print(y, DEC);
         }
         
-    } */
+    }
 }
 
 

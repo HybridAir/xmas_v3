@@ -3,7 +3,7 @@
     
 void initEeprom() {
     Wire.begin(); // initialise the connection
-    Serial.begin(9600);
+    
 } 
     
     
