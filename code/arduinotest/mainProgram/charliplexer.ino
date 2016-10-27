@@ -4,18 +4,9 @@
 
 
 
-// I skipped F because F isn't allowed
-/* #define A 2
-#define B 3
-#define C 4
-#define D 5
-#define E 6
-#define G 7
-#define H 8
 
-#define NUMOFLEDS 40 */
 
-void initDisplay() {
+void initLeds() {
     pinMode(A, INPUT);
    pinMode(B, INPUT);
    pinMode(C, INPUT);
