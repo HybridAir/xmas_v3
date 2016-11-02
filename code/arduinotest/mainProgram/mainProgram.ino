@@ -35,7 +35,7 @@ void Chr(char theChar, unsigned long value) {
 void setup() {
    initLeds();
    
-   Chr('A', 0b01101001111110011001);
+    Chr('A', 0b01101001111110011001);
   Chr('B', 0b11101001111010011110);
   Chr('C', 0b01111000100010000111);
   Chr('D', 0b11101001100110011110);
@@ -68,10 +68,10 @@ void setup() {
   Chr('1', 0b01100010001000100111);
   Chr('2', 0b11110001111010001111);
   Chr('3', 0b11100001011000011110);
-  Chr('6', 0b11101000111110011111);
+  Chr('6', 0b11101000111110011111); 
 
   
-  pinMode(9, INPUT);
+  pinMode(10, INPUT);
   
   initEeprom();
   switchString();
@@ -83,7 +83,7 @@ void setup() {
 
 void loop() {
     
-    bool newBtn = digitalRead(9);
+    bool newBtn = digitalRead(10);
     if(newBtn != prevBtn) {
         prevBtn = newBtn;
         

@@ -2,7 +2,7 @@
 #define _MAINPROGRAM_h_
 
 #define A 2
-#define B 3
+#define B 9
 #define C 4
 #define D 5
 #define E 6

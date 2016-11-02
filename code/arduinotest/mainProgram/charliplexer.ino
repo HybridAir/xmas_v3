@@ -5,7 +5,6 @@
 
 
 
-
 void initLeds() {
     pinMode(A, INPUT);
    pinMode(B, INPUT);
