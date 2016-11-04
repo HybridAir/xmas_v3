@@ -1,11 +1,12 @@
 //basic charlieplex matrix test, goes through all leds
-//compiles to 586 bytes
+//compiles to 482 prog, 9 ram
 #include <util/delay.h>
 
-#define NUMOFLEDS 40
+//total number of leds in the display
+#define NUM_LEDS 40
 
-unsigned long previousMillis = 0;
-const long interval = 100; // milliseconds gap between sending a network request.
+// unsigned long previousMillis = 0;
+// const long interval = 100; // milliseconds gap between sending a network request.
 
 // I skipped F because F isn't allowed
 #define A PA0
@@ -16,11 +17,14 @@ const long interval = 100; // milliseconds gap between sending a network request
 #define G PA5
 #define H PA6
 
+//the amount of charlieplexed display sections
+#define NUM_SECTIONS 7
+
 
 
 // visual array of how the leds are laid out, and the pins they connect to
 //cathode first, then anode
-int ledGrid[NUMOFLEDS][2] = {
+const byte ledGrid[NUM_LEDS][2] PROGMEM = {
 
     {A,B},  {B,A},  {C,A},  {D,A},  {E,A},  {G,A},  {H,A},  {A,H},
 
@@ -47,14 +51,18 @@ void setup() {
 void loop() {
 
     //display all leds
-    for(int i=0;i<NUMOFLEDS;i++){
-        setLed(ledGrid[i]);
+    for(int i=0;i<NUM_LEDS;i++){
+        setLed(i);
     }
 
 }
 
 
-void setLed( int pins[2] ){
+void setLed( byte ledIn ){
+    
+  byte pins[2];
+  pins[0] = pgm_read_byte(&(ledGrid[ledIn][0]));		//get the LED the user wants to be lit out of PROGMEM
+  pins[1] = pgm_read_byte(&(ledGrid[ledIn][1]));		//get the LED the user wants to be lit out of PROGMEM
 
   //reset all pins to inputs and LOW
   DDRA = 0;
