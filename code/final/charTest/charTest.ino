@@ -26,6 +26,8 @@
 //character map width
 #define CHAR_WIDTH 5
 
+#define PREOFFSET 3
+
 
 const long charMaps[30] PROGMEM = {
     0b1111111111111111111111111,    //0
@@ -69,7 +71,8 @@ void setup() {
         frame[i] = 0b11111111;
     } */
     
-    drawChar(1);
+    drawChar(1, -2);
+    drawChar(2, 4);
 }
 
 
@@ -83,11 +86,13 @@ void loop() {
 
 //takes the specified character and draws it on the frame array
 //void drawChar(char theChar, int charOffset) {
-void drawChar(byte theChar) {
+void drawChar(byte theChar, int offset) {
+    
+    //by default, the characters are aligned to the right of the display, so this will fix that
+    int finalOffset = offset - PREOFFSET;
 
     //get the specified character map out of progmem
     long currentCharMap = pgm_read_dword(&(charMaps[theChar]));
-    //long currentCharMap = 0b1111010001111111000110001;
 
     //go through each character map row
     for (byte row = DISPLAY_HEIGHT; row >= 1; row--) {
@@ -96,7 +101,13 @@ void drawChar(byte theChar) {
         long charRow = currentCharMap & 0b11111;
         
         //take the ANDed result and put it in the correct frame row
-        frame[row - 1] = (byte)charRow;
+        if(finalOffset > 0) {
+            frame[row - 1] |= (byte)charRow >> finalOffset;
+        }
+        else {
+            frame[row - 1] |= (byte)charRow << abs(finalOffset);
+        }
+        
         
         //then shift the local map over 5 bits
         currentCharMap = currentCharMap >> CHAR_WIDTH;
@@ -115,6 +126,9 @@ void renderFrame() {
         DDRA = 0;      
         PORTA = 0;
         
+        //set this section's cathode pin as an output, its state is still low from before
+        DDRA = (1<<i);
+        
         //go through each led in the display
         for(byte led = 0; led < NUM_LEDS; led++) {
             //get the cathode value out of the current ledgrid entry
@@ -122,9 +136,6 @@ void renderFrame() {
             
             //if the cathode cell value in the current ledgrid entry is the displaySection that we are looking for
             if(currentCathode == i) {
-                
-                //set this section's cathode pin as an output, its state is still low from before
-                DDRA |= (1<<currentCathode);
                 
                 //check if the current led is supposed to be lit in the current frame
                 if(getPixel(led + 1)) {         //getPixel is not 0 indexed, so add 1
