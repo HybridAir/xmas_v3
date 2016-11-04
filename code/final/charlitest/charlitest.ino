@@ -64,7 +64,7 @@ void loop() {
     //for each display section
     for(byte i = 0; i < NUM_SECTIONS; i++) {
         //the above only works because each charlie pin used is in numerical order
-        //byte currentSection = displaySections[i];
+        //this probably wont work if you start changing pinouts but it saved me like 30 bytes so
         
         //reset all pins to inputs and LOW
         //CHANGE THIS LATER since other functions will need to use portA too
@@ -77,7 +77,6 @@ void loop() {
             byte currentCathode = pgm_read_byte(&(ledGrid[led][0]));
             
             //if the cathode cell value in the current ledgrid entry is the displaySection that we are looking for
-            //if(currentCathode == currentSection) {
             if(currentCathode == i) {
                 
                 //set this section's cathode pin as an output, its state is still low from before
