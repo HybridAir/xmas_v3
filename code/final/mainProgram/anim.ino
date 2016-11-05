@@ -73,6 +73,68 @@ const long charMaps[64] PROGMEM = {
     0b0000000000000000000011111         //_
 };
 
+//char currentString[STRINGLENGTH];
+//const char string0[STRINGLENGTH] PROGMEM = "HELLO WORLD";
+
+
+//switchs the currently displayed string
+/* void switchString() {
+    firstRun = true;
+    offset = 0;
+    
+    char stringAddress = STRINGLENGTH * currentString;
+    byte stringIndex = 0;
+    for(char y = stringAddress; y < stringAddress + STRINGLENGTH; y++) {
+        byte b = i2c_eeprom_read_byte(0x50, y);
+        
+        if(b != 0) {
+            myString[stringIndex] = b;
+            stringIndex++;
+            length = stringIndex + 1;
+        }
+    }
+} */
+
+
+
+// draw the string on the given offset
+void drawString(char *theString, int offset) {
+    int currentChar = 0;
+    if (offset <= 0) {
+        currentChar = abs(offset) / 5;
+  //Serial.println(currentChar);
+    }
+  
+  int x = 0;
+  char space = 0;
+  int extra = 0;
+  bool printing = true;
+  
+  
+    while(printing) {
+        if(offset + ((currentChar + x)*5) >= -6 + (-1*currentChar)) {
+            if(currentChar + x < STRINGLENGTH - 1) {               //make sure there is still a character left to display
+                if(x + currentChar > currentChar) {
+                    space++;
+                }
+                else {
+                    space = 0;
+                }
+                
+                if(abs(offset) / 5) {
+                    extra = 5 * currentChar;
+                }
+                
+                //Serial.println(currentChar + x);
+                drawChar(theString[currentChar + x], offset + space + extra + (x*5));
+            }
+        }
+        x++;
+            if(x > 2) {
+            printing = false;
+        }
+    }
+}
 
 
 

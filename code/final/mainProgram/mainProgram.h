@@ -29,4 +29,7 @@
 
 #define PREOFFSET 3
 
+#define NUMOFSTRINGS 4           //4 strings saved in eeprom, 0 inclusive as usual
+#define STRINGLENGTH 18          //largest string is 18 bytes long, so they all need to be
+
 #endif

@@ -15,15 +15,19 @@ byte frame[DISPLAY_HEIGHT] = {
 };
 
 
+char currentString[STRINGLENGTH];
+const char string0[STRINGLENGTH] PROGMEM = "HELLO WORLD";
+
+
+
 void setup() {
-/*     //create a full frame
-    for(byte i = 0; i < DISPLAY_HEIGHT; i++) {
-        frame[i] = 0b11111111;
-    } */
+    //drawChar('2', 0);
     
-    drawChar('2', 0);
-    //drawChar(1, -2);
-    //drawChar(2, 4);
+    for (byte i = 0; i < STRINGLENGTH; i++) {
+        currentString[i] =  pgm_read_byte_near(string0 + i);
+    }
+    
+    drawString(currentString, -1);
 }
 
 
