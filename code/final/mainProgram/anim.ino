@@ -146,14 +146,21 @@ void drawString(char *theString, int offset) {
   //Serial.println(currentChar);
     }
   
-  int x = 0;
+
+  int x = 0;        //the amount of chars that have been printed in this offset cycle
   char space = 0;
   int extra = 0;
   bool printing = true;
   
   
     while(printing) {
-        if(offset + ((currentChar + x)*5) >= -6 + (-1*currentChar)) {
+        
+        //if we are done drawing the current character????????
+        //if the offset and the size of all the currently drawn characers is higher than uh
+        //the negative offset of the current character location in the string, plus the space to get it off the display?
+        //this is suppsoed to tell the program when there is room to draw a new character
+        //I think
+        if(offset + ((currentChar + x)*4) >= -6 + (-1*currentChar)) {
             if(currentChar + x < 18 - 1) {               //make sure there is still a character left to display
                 if(x + currentChar > currentChar) {
                     space++;
@@ -163,14 +170,16 @@ void drawString(char *theString, int offset) {
                 }
                 
                 if(abs(offset) / 5) {
-                    extra = 6 * currentChar;
+                    extra = 5 * currentChar;
                 }
                 
                 //Serial.println(currentChar + x);
-                drawChar(theString[currentChar + x], offset + space + extra + (x*5));
+                drawChar(theString[currentChar + x], offset + space + extra + (x*4));
             }
         }
         x++;
+        
+        //don't bother printing more than 3 chars at once, they wont fit and you'll waste cpu cycles
             if(x > 2) {
             printing = false;
         }
