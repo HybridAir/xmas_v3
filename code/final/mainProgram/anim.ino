@@ -1,9 +1,4 @@
 //handles text display and other higher level animations
-//compiles to 1014 prog, 14 ram
-
-#include <util/delay.h>
-#include <avr/pgmspace.h>
-#include "mainProgram.h"
 
 
 const long charMaps[64] PROGMEM = {
@@ -97,7 +92,10 @@ const long charMaps[64] PROGMEM = {
 
 
 
-// draw the string on the given offset
+
+
+
+// render the string on the given offset
 void drawString(char *theString, int offset) {
     int currentChar = 0;
     if (offset <= 0) {
@@ -113,7 +111,7 @@ void drawString(char *theString, int offset) {
   
     while(printing) {
         if(offset + ((currentChar + x)*5) >= -6 + (-1*currentChar)) {
-            if(currentChar + x < STRINGLENGTH - 1) {               //make sure there is still a character left to display
+            if(currentChar + x < 18 - 1) {               //make sure there is still a character left to display
                 if(x + currentChar > currentChar) {
                     space++;
                 }
@@ -122,7 +120,7 @@ void drawString(char *theString, int offset) {
                 }
                 
                 if(abs(offset) / 5) {
-                    extra = 5 * currentChar;
+                    extra = 6 * currentChar;
                 }
                 
                 //Serial.println(currentChar + x);
@@ -135,6 +133,71 @@ void drawString(char *theString, int offset) {
         }
     }
 }
+
+
+
+/* //draws the string at the given offset, but really just tells the character drawer where to draw characters
+void drawString(char *theString, int offset) {
+    
+    //local variable for storing the current character in the string being printed, start at the beginning of the string
+    int currentStringIndex = 0;
+    
+    //since we dont want to waste time trying to draw every single character at a time (which wont even be displayed)
+    //start at the oldest character that is still on the screen, even partially
+    //but only do this if the string is currently leaving the screen from the left (negative offset only)
+    if (offset <= 0) {
+        //if the offset is negative, then find the string index that we can start displying the string at
+        //this only works because all characters are CHAR_WIDTH pixels wide
+        currentStringIndex = abs(offset) / CHAR_WIDTH;
+    }
+  
+  
+    
+    int displayedChars = 0;      //keeps track of the amount of characters we have displayed so far
+    char space = 0;
+    int extra = 0;
+    bool printing = true;
+  
+  
+    while(printing) {
+        
+        //current working position in the string, in pixels
+        int currentStringPos = ((currentStringIndex + displayedChars) * CHAR_WIDTH);
+        
+        //the position of the current character in relation to the display, in pixels
+        int currentCharPos = (-1*(CHAR_WIDTH + 1)) + (-1*currentStringIndex);
+        
+        //check if the character we are going to display will even be in display range
+        //if the current position of the string with offset is greater than the position of the current character
+        if((offset + currentStringPos) >= currentCharPos) {
+            
+            //if we are not at the end of the string yet
+            //TESTME since not all strings are STRINGLENGTH long
+            if(currentStringIndex + displayedChars < STRINGLENGTH - 1) {
+                
+                //add a 1 pixel space after the character if another will be displayed after it
+                if(displayedChars + currentStringIndex > currentStringIndex) {
+                    space++;
+                }
+                else {
+                    space = 0;
+                }
+                
+                //I forgot what this was for TESTME
+                //has to do with string index position working right
+                if(abs(offset) / CHAR_WIDTH) {
+                    extra = CHAR_WIDTH * currentStringIndex;
+                }
+                
+                drawChar(theString[currentStringIndex + displayedChars], offset + space + extra + (displayedChars*5));
+            }
+        }
+        displayedChars++;
+            if(displayedChars > 2) {
+            printing = false;
+        }
+    }
+} */
 
 
 

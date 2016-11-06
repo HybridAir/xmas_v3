@@ -1,5 +1,5 @@
 //main xmas_v3 program by HybridAir
-//compiles to 1014 prog, 14 ram
+//compiles to 1470 prog, 32 ram
 
 #include <util/delay.h>
 #include <avr/pgmspace.h>
@@ -27,7 +27,7 @@ void setup() {
         currentString[i] =  pgm_read_byte_near(string0 + i);
     }
     
-    drawString(currentString, -1);
+    drawString(currentString, -48);
 }
 
 
