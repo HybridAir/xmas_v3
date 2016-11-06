@@ -140,19 +140,23 @@ void showMessage() {
 
 // render the string on the given offset
 void drawString(char *theString, int offset) {
+    
+    //this is the current character position in the string, but in pixel form
+    //so instead of a string index position number, you get the pixel position
     int currentChar = 0;
+    //but only if the offset is negative
     if (offset <= 0) {
-        currentChar = abs(offset) / 5;
-  //Serial.println(currentChar);
+        currentChar = abs(offset) / 6;
     }
   
 
-  int x = 0;        //the amount of chars that have been printed in this offset cycle
-  char space = 0;
-  int extra = 0;
+  int x = 0;                //the amount of chars that have been printed in this offset cycle
+  char space = 0;           //not really needed here but it works, determines if there is a 1px space between chars
+  int extra = 0;            //hell if I know what this does
   bool printing = true;
   
   
+    //don't waste time printing/drawing characters if it was established that there are none left?????
     while(printing) {
         
         //if we are done drawing the current character????????
@@ -160,27 +164,36 @@ void drawString(char *theString, int offset) {
         //the negative offset of the current character location in the string, plus the space to get it off the display?
         //this is suppsoed to tell the program when there is room to draw a new character
         //I think
-        if(offset + ((currentChar + x)*4) >= -6 + (-1*currentChar)) {
-            if(currentChar + x < 18 - 1) {               //make sure there is still a character left to display
+        //if(offset + ((currentChar + x)*4) >= -6 + (-1*currentChar)) {
+        if(offset + ((currentChar + x)*5) >= -6 + (-1*currentChar)) {
+            
+            //ok so now make sure that there is still something left in the string to print
+            //string length minus 1 becuase it's 0 indexed
+            if(currentChar + x < 18 - 1) {
+                
+                //if we are not at the beginning of this currest offset display section thing
+                //add a 1px space after the character
                 if(x + currentChar > currentChar) {
                     space++;
+                    //space++;        //I added an extra one
                 }
                 else {
                     space = 0;
                 }
                 
-                if(abs(offset) / 5) {
-                    extra = 5 * currentChar;
+                //I don't know what this does but things break if it's gone
+                if(abs(offset) / 6) {
+                    extra = 6 * currentChar;
                 }
                 
-                //Serial.println(currentChar + x);
-                drawChar(theString[currentChar + x], offset + space + extra + (x*4));
+
+                drawChar(theString[currentChar + x], offset + space + extra + (x*5));
             }
         }
         x++;
         
         //don't bother printing more than 3 chars at once, they wont fit and you'll waste cpu cycles
-            if(x > 2) {
+            if(x >= 3) {
             printing = false;
         }
     }

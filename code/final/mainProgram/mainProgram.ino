@@ -16,7 +16,7 @@ byte frame[DISPLAY_HEIGHT] = {
 
 
 char currentString[STRINGLENGTH];
-const char string0[STRINGLENGTH] PROGMEM = "HELLO WORLD";
+const char string0[STRINGLENGTH] PROGMEM = "HELLO WORLD123456";
 
 
 
