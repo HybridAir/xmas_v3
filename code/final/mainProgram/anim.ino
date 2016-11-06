@@ -68,6 +68,8 @@ const long charMaps[64] PROGMEM = {
     0b0000000000000000000011111         //_
 };
 
+bool restartString = true;
+
 //char currentString[STRINGLENGTH];
 //const char string0[STRINGLENGTH] PROGMEM = "HELLO WORLD";
 
@@ -89,6 +91,47 @@ const long charMaps[64] PROGMEM = {
         }
     }
 } */
+
+bool firstRun = true;
+unsigned long currentMillis = 0;
+unsigned long previousMillis = 0;
+
+int offset = 0;
+
+
+
+void showMessage() {
+    //if this is the first time running this string, or it is being looped
+    if(firstRun) {
+        //display the string at the last saved offset, and hold it there for some time
+        drawString(currentString, offset);
+        if (millis() - currentMillis > FIRSTDELAY) {
+            firstRun = false;
+        }
+    }
+    else {
+        drawString(currentString, offset);
+        currentMillis = millis();
+        if (currentMillis - previousMillis > TEXTSPEED) {
+            previousMillis = currentMillis;
+            // shift string left one column
+            offset--;
+            
+            //if we are at the end of the string
+            if(abs(offset) >= (18 * 6) - 6){
+                //cleanly loop the string
+                
+                //reset_pins();                       //clear the screen to remove any artifacts
+                firstRun = true;                    //restart the scrolling with a dealy
+                offset = DISPLAY_WIDTH;             //not the first time, so bring the text in from the right
+                //offset = 0;             //not the first time, so bring the text in from the right
+                currentMillis = millis();
+            }
+        }
+        
+    }
+}
+
 
 
 
