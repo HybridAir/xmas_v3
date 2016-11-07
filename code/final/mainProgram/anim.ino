@@ -83,7 +83,7 @@ byte currentStringLength = STRINGLENGTH;            //length of the currently se
 char currentString[STRINGLENGTH];                   //the current string to be displayed
 
 bool restartString = true;
-int offset = 0;                     //curent string location offset value, in pixels
+int offset = 0;                                     //curent string location offset value, in pixels
 
 //used for delay timing stuff
 unsigned long currentMillis = 0;
@@ -119,17 +119,15 @@ void switchMessage() {
 //call this often
 void showMessage() {
     //if this is the first time running this string, or it is being looped
-    if(restartString) {
-        //display the string at the last saved offset, and hold it there for some time
-        drawString(offset);
-        if (millis() - currentMillis > FIRSTDELAY) {
+    
+    drawString(offset);
+    
+    if(restartString) {         //display the string at the last saved offset, and hold it there for some time
+        if(millis() - currentMillis > FIRSTDELAY) {
             restartString = false;
         }
     }
-    else {
-        //display the string normally
-        drawString(offset);
-        
+    else {                      //display the string normally
         //check if it's time to update the display offset
         currentMillis = millis();
         if (currentMillis - previousMillis > TEXTSPEED) {
@@ -138,7 +136,7 @@ void showMessage() {
             offset--;
             
             //if we are at the end of the string, then cleanly loop it
-            if(abs(offset) >= (currentStringLength * 6) - 6){
+            if(offset <= -1*((currentStringLength * 6) - 6)){
                 restartString = true;               //loop with a dealy
                 offset = DISPLAY_WIDTH;             //bring the text in from the right
                 currentMillis = millis();
@@ -163,7 +161,7 @@ void drawString(int offset) {
   
 
     byte x = 0;                 //the amount of chars that have been printed in this offset cycle
-    char space = 0;             //used for adding a 1px space between characters
+    byte space = 0;             //used for adding a 1px space between characters
     int extra = 0;              //hell if I know what this does
     bool printing = true;
   
