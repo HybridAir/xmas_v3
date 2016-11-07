@@ -1,5 +1,5 @@
 //main xmas_v3 program by HybridAir
-//compiles to 1778 prog, 44 ram
+//compiles to 1926 prog, 45 ram
 
 #include <util/delay.h>
 #include <avr/pgmspace.h>
@@ -15,17 +15,17 @@ byte frame[DISPLAY_HEIGHT] = {
 };
 
 
-char currentString[STRINGLENGTH];
-const char string0[STRINGLENGTH] PROGMEM = "HELLO WORLD123456";
+
 
 
 
 void setup() {
     //drawChar('2', 0);
     
-    for (byte i = 0; i < STRINGLENGTH; i++) {
-        currentString[i] =  pgm_read_byte_near(string0 + i);
-    }
+
+    
+    
+    switchMessage();
     
     //drawString(currentString, 0);
     

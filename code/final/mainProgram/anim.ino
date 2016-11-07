@@ -68,45 +68,58 @@ const long charMaps[64] PROGMEM = {
     0b0000000000000000000011111         //_
 };
 
+
+byte currentStringLength = STRINGLENGTH;
+byte savedStringIndex = 0;
+char currentString[STRINGLENGTH];
+
+
+const char savedStrings[TOTAL_STRINGS][STRINGLENGTH] PROGMEM = {
+    "MERRY CHRISTMAS",
+    "HAPPY HOLIDAYS",
+    "HAPPY NEW YEAR",
+    "FROM, BLAKE",
+    "XMAS_V3 2016"
+};
+
+
 bool restartString = true;
-
-//char currentString[STRINGLENGTH];
-//const char string0[STRINGLENGTH] PROGMEM = "HELLO WORLD";
-
-
-//switchs the currently displayed string
-/* void switchString() {
-    firstRun = true;
-    offset = 0;
-    
-    char stringAddress = STRINGLENGTH * currentString;
-    byte stringIndex = 0;
-    for(char y = stringAddress; y < stringAddress + STRINGLENGTH; y++) {
-        byte b = i2c_eeprom_read_byte(0x50, y);
-        
-        if(b != 0) {
-            myString[stringIndex] = b;
-            stringIndex++;
-            length = stringIndex + 1;
-        }
-    }
-} */
-
-bool firstRun = true;
 unsigned long currentMillis = 0;
 unsigned long previousMillis = 0;
 
 int offset = 0;
 
 
+//switches to a new message, reads the last selected string out of progmem and resets stuff for the new string
+void switchMessage() {
+    restartString = true;
+    offset = 0;
+    
+    //read the new string out of progmem until you get to the end of it
+    for (byte i = 0; i < STRINGLENGTH; i++) {
+        char readChar = pgm_read_byte_near(savedStrings[savedStringIndex] + i);
+        
+        if(readChar != 0) {
+            currentString[i] = readChar;
+        }
+        else {
+            currentStringLength = i + 1;
+            break;
+        }
+    }
+}
+
+
+
+
 
 void showMessage() {
     //if this is the first time running this string, or it is being looped
-    if(firstRun) {
+    if(restartString) {
         //display the string at the last saved offset, and hold it there for some time
         drawString(currentString, offset);
         if (millis() - currentMillis > FIRSTDELAY) {
-            firstRun = false;
+            restartString = false;
         }
     }
     else {
@@ -118,11 +131,11 @@ void showMessage() {
             offset--;
             
             //if we are at the end of the string
-            if(abs(offset) >= (18 * 6) - 6){
+            if(abs(offset) >= (currentStringLength * 6) - 6){
                 //cleanly loop the string
                 
                 //reset_pins();                       //clear the screen to remove any artifacts
-                firstRun = true;                    //restart the scrolling with a dealy
+                restartString = true;                    //restart the scrolling with a dealy
                 offset = DISPLAY_WIDTH;             //not the first time, so bring the text in from the right
                 //offset = 0;             //not the first time, so bring the text in from the right
                 currentMillis = millis();
@@ -138,7 +151,7 @@ void showMessage() {
 
 
 
-// render the string on the given offset
+//draw the string on the given offset
 void drawString(char *theString, int offset) {
     
     //this is the current character position in the string, but in pixel form
@@ -169,7 +182,7 @@ void drawString(char *theString, int offset) {
             
             //ok so now make sure that there is still something left in the string to print
             //string length minus 1 becuase it's 0 indexed
-            if(currentChar + x < 18 - 1) {
+            if(currentChar + x < currentStringLength - 1) {
                 
                 //if we are not at the beginning of this currest offset display section thing
                 //add a 1px space after the character
