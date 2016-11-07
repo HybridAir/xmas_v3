@@ -1,6 +1,7 @@
 //handles text display and other higher level animations
 
-
+//character map storage
+//characters are in ascii order, and use 25 out of the 32 given bits
 const long charMaps[64] PROGMEM = {
     0b0000000000000000000000000,        //Space
     0b0100001000010000000001000,        //!
@@ -69,11 +70,7 @@ const long charMaps[64] PROGMEM = {
 };
 
 
-byte currentStringLength = STRINGLENGTH;
-byte savedStringIndex = 0;
-char currentString[STRINGLENGTH];
-
-
+//message string storage, all strings are a max of 18 chars in length
 const char savedStrings[TOTAL_STRINGS][STRINGLENGTH] PROGMEM = {
     "MERRY CHRISTMAS",
     "HAPPY HOLIDAYS",
@@ -82,23 +79,32 @@ const char savedStrings[TOTAL_STRINGS][STRINGLENGTH] PROGMEM = {
     "XMAS_V3 2016"
 };
 
+byte currentStringLength = STRINGLENGTH;            //length of the currently selected message string
+byte savedStringIndex = 0;                          //array index of the currently selected message string
+char currentString[STRINGLENGTH];                   //the current string to be displayed
 
 bool restartString = true;
+int offset = 0;                     //curent string location offset value, in pixels
+
+//used for delay timing stuff
 unsigned long currentMillis = 0;
 unsigned long previousMillis = 0;
 
-int offset = 0;
 
-
-//switches to a new message, reads the last selected string out of progmem and resets stuff for the new string
+//switches to a new message string, reads it out of progmem and resets stuff for in preparation for its display
 void switchMessage() {
+    
+    //new string always start at the beginning
     restartString = true;
     offset = 0;
     
     //read the new string out of progmem until you get to the end of it
-    for (byte i = 0; i < STRINGLENGTH; i++) {
+    //for each possible character in the string
+    for (byte i = 0; i < STRINGLENGTH; i++) { 
+        //get the current character out of progmem
         char readChar = pgm_read_byte_near(savedStrings[savedStringIndex] + i);
         
+        //stop if you get to the end of the string (strings can still be less than STRINGLENGTH)
         if(readChar != 0) {
             currentString[i] = readChar;
         }
@@ -110,63 +116,57 @@ void switchMessage() {
 }
 
 
-
-
-
+//handles message display timing, looping, etc
+//call this often
 void showMessage() {
     //if this is the first time running this string, or it is being looped
     if(restartString) {
         //display the string at the last saved offset, and hold it there for some time
-        drawString(currentString, offset);
+        drawString(offset);
         if (millis() - currentMillis > FIRSTDELAY) {
             restartString = false;
         }
     }
     else {
-        drawString(currentString, offset);
+        //display the string normally
+        drawString(offset);
+        
+        //check if it's time to update the display offset
         currentMillis = millis();
         if (currentMillis - previousMillis > TEXTSPEED) {
             previousMillis = currentMillis;
             // shift string left one column
             offset--;
             
-            //if we are at the end of the string
+            //if we are at the end of the string, then cleanly loop it
             if(abs(offset) >= (currentStringLength * 6) - 6){
-                //cleanly loop the string
-                
-                //reset_pins();                       //clear the screen to remove any artifacts
-                restartString = true;                    //restart the scrolling with a dealy
-                offset = DISPLAY_WIDTH;             //not the first time, so bring the text in from the right
-                //offset = 0;             //not the first time, so bring the text in from the right
+                restartString = true;               //loop with a dealy
+                offset = DISPLAY_WIDTH;             //bring the text in from the right
                 currentMillis = millis();
             }
-        }
-        
+        } 
     }
 }
 
 
-
-
-
-
-
 //draw the string on the given offset
-void drawString(char *theString, int offset) {
+void drawString(int offset) {
     
     //this is the current character position in the string, but in pixel form
     //so instead of a string index position number, you get the pixel position
     int currentChar = 0;
+    
     //but only if the offset is negative
     if (offset <= 0) {
-        currentChar = abs(offset) / 6;
+        //add 1 for the space inbetween characters
+        currentChar = abs(offset) / (CHAR_WIDTH + 1);
     }
   
 
-  int x = 0;                //the amount of chars that have been printed in this offset cycle
-  char space = 0;           //not really needed here but it works, determines if there is a 1px space between chars
-  int extra = 0;            //hell if I know what this does
-  bool printing = true;
+    byte x = 0;                 //the amount of chars that have been printed in this offset cycle
+    char space = 0;             //used for adding a 1px space between characters
+    int extra = 0;              //hell if I know what this does
+    bool printing = true;
   
   
     //don't waste time printing/drawing characters if it was established that there are none left?????
@@ -177,8 +177,7 @@ void drawString(char *theString, int offset) {
         //the negative offset of the current character location in the string, plus the space to get it off the display?
         //this is suppsoed to tell the program when there is room to draw a new character
         //I think
-        //if(offset + ((currentChar + x)*4) >= -6 + (-1*currentChar)) {
-        if(offset + ((currentChar + x)*5) >= -6 + (-1*currentChar)) {
+        if(offset + ((currentChar + x)*CHAR_WIDTH) >= -6 + (-1*currentChar)) {
             
             //ok so now make sure that there is still something left in the string to print
             //string length minus 1 becuase it's 0 indexed
@@ -188,7 +187,6 @@ void drawString(char *theString, int offset) {
                 //add a 1px space after the character
                 if(x + currentChar > currentChar) {
                     space++;
-                    //space++;        //I added an extra one
                 }
                 else {
                     space = 0;
@@ -200,10 +198,10 @@ void drawString(char *theString, int offset) {
                 }
                 
 
-                drawChar(theString[currentChar + x], offset + space + extra + (x*5));
+                drawChar(currentString[currentChar + x], offset + space + extra + (x*CHAR_WIDTH));
             }
         }
-        x++;
+        x++;                //go on to the next character to display?
         
         //don't bother printing more than 3 chars at once, they wont fit and you'll waste cpu cycles
             if(x >= 3) {
@@ -211,72 +209,6 @@ void drawString(char *theString, int offset) {
         }
     }
 }
-
-
-
-/* //draws the string at the given offset, but really just tells the character drawer where to draw characters
-void drawString(char *theString, int offset) {
-    
-    //local variable for storing the current character in the string being printed, start at the beginning of the string
-    int currentStringIndex = 0;
-    
-    //since we dont want to waste time trying to draw every single character at a time (which wont even be displayed)
-    //start at the oldest character that is still on the screen, even partially
-    //but only do this if the string is currently leaving the screen from the left (negative offset only)
-    if (offset <= 0) {
-        //if the offset is negative, then find the string index that we can start displying the string at
-        //this only works because all characters are CHAR_WIDTH pixels wide
-        currentStringIndex = abs(offset) / CHAR_WIDTH;
-    }
-  
-  
-    
-    int displayedChars = 0;      //keeps track of the amount of characters we have displayed so far
-    char space = 0;
-    int extra = 0;
-    bool printing = true;
-  
-  
-    while(printing) {
-        
-        //current working position in the string, in pixels
-        int currentStringPos = ((currentStringIndex + displayedChars) * CHAR_WIDTH);
-        
-        //the position of the current character in relation to the display, in pixels
-        int currentCharPos = (-1*(CHAR_WIDTH + 1)) + (-1*currentStringIndex);
-        
-        //check if the character we are going to display will even be in display range
-        //if the current position of the string with offset is greater than the position of the current character
-        if((offset + currentStringPos) >= currentCharPos) {
-            
-            //if we are not at the end of the string yet
-            //TESTME since not all strings are STRINGLENGTH long
-            if(currentStringIndex + displayedChars < STRINGLENGTH - 1) {
-                
-                //add a 1 pixel space after the character if another will be displayed after it
-                if(displayedChars + currentStringIndex > currentStringIndex) {
-                    space++;
-                }
-                else {
-                    space = 0;
-                }
-                
-                //I forgot what this was for TESTME
-                //has to do with string index position working right
-                if(abs(offset) / CHAR_WIDTH) {
-                    extra = CHAR_WIDTH * currentStringIndex;
-                }
-                
-                drawChar(theString[currentStringIndex + displayedChars], offset + space + extra + (displayedChars*5));
-            }
-        }
-        displayedChars++;
-            if(displayedChars > 2) {
-            printing = false;
-        }
-    }
-} */
-
 
 
 //takes the specified character and draws it on the frame array
@@ -302,7 +234,6 @@ void drawChar(char theChar, int offset) {
         else {
             frame[row - 1] |= (byte)charRow << abs(finalOffset);
         }
-        
         
         //then shift the local map over 5 bits
         currentCharMap = currentCharMap >> CHAR_WIDTH;

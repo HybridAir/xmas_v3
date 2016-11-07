@@ -1,8 +1,7 @@
 #ifndef _MAINPROGRAM_h_
 #define _MAINPROGRAM_h_
 
-//total number of leds in the display
-#define NUM_LEDS 40
+//DISPLAY
 
 //display section names with their cooresponding charpliex pins
 //F isn't used becuase AVR uses it for frequency stuff
@@ -14,22 +13,20 @@
 #define G PA5
 #define H PA6
 
-// where does our characterMap start in the ASCII code
-#define MAP_START      32
+//total number of leds in the display
+#define NUM_LEDS 40
 
-//display size
 #define DISPLAY_WIDTH  8
 #define DISPLAY_HEIGHT 5
 
-//the amount of charlieplexed display sections
 #define NUM_SECTIONS 7
-
-//character map width
-#define CHAR_WIDTH 5
-
 #define PREOFFSET 3
 
+
 //ANIM
+#define MAP_START      32
+
+#define CHAR_WIDTH 5
 
 #define TOTAL_STRINGS 5           
 #define STRINGLENGTH 18          //largest string is 18 bytes long, so they all need to be

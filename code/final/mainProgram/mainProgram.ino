@@ -1,5 +1,5 @@
 //main xmas_v3 program by HybridAir
-//compiles to 1926 prog, 45 ram
+//compiles to 1900 prog, 45 ram
 
 #include <util/delay.h>
 #include <avr/pgmspace.h>
@@ -20,28 +20,12 @@ byte frame[DISPLAY_HEIGHT] = {
 
 
 void setup() {
-    //drawChar('2', 0);
-    
-
-    
-    
     switchMessage();
-    
-    //drawString(currentString, 0);
-    
-    //while(true) {
-    //renderFrame();
-    //}
 }
 
 
 void loop() {
-    //draw the frame and do nothing else
-        showMessage();
+    showMessage();
     renderFrame();
-    
-    for(byte i = 0; i < DISPLAY_HEIGHT; i++) {
-        frame[i] = 0;
-    }
-
+    clearFrame();
 }

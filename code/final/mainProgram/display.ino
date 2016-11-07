@@ -18,7 +18,11 @@ const byte ledGrid[NUM_LEDS][2] PROGMEM = {
 };
 
 
-
+void clearFrame() {
+    for(byte i = 0; i < DISPLAY_HEIGHT; i++) {
+        frame[i] = 0;
+    }
+}
 
 
 void renderFrame() {
