@@ -1,6 +1,8 @@
 #ifndef _MAINPROGRAM_h_
 #define _MAINPROGRAM_h_
 
+#define BUTTON PB2
+
 //DISPLAY
 
 //display section names with their cooresponding charpliex pins

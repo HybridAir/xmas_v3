@@ -80,7 +80,6 @@ const char savedStrings[TOTAL_STRINGS][STRINGLENGTH] PROGMEM = {
 };
 
 byte currentStringLength = STRINGLENGTH;            //length of the currently selected message string
-byte savedStringIndex = 0;                          //array index of the currently selected message string
 char currentString[STRINGLENGTH];                   //the current string to be displayed
 
 bool restartString = true;
