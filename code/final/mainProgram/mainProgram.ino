@@ -1,5 +1,5 @@
 //main xmas_v3 program by HybridAir
-//compiles to 2192 prog, 56 ram
+//compiles to 2132 prog, 56 ram
 
 #include <avr/sleep.h>
 #include <avr/interrupt.h>
@@ -68,7 +68,7 @@ void loop() {
     clearFrame();
     
     if(sleepEnabled) {								//only check the sleep timer if auto sleeping is enabled
-		if(millis() - lastSleep >= SLEEPTIME) {						//if the current time is greater than the sleeptime value
+		if(millis() - lastSleep >= SLEEPTIME) {			//if the current time is greater than the sleeptime value
             lastSleep = millis();                       //remember the last time we went to sleep
             sleep();									//go to sleep
         }

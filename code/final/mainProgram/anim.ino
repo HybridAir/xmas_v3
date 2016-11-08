@@ -2,19 +2,8 @@
 
 //character map storage
 //characters are in ascii order, and use 25 out of the 32 given bits
-const long charMaps[64] PROGMEM = {
-    0b0000000000000000000000000,        //Space
-    0b0100001000010000000001000,        //!
-    0b0,
-    0b0,
-    0b0,
-    0b0,
-    0b0,
-    0b0010000100000000000000000,        //'
-    0b0,
-    0b0,
-    0b0,
-    0b0,        
+const long charMaps[49] PROGMEM = {
+    0b0000000000000000000000000,        //+, but we're using it as a space  
     0b0000000000000000010001000,        //,
     0b0000000000011100000000000,        //-
     0b0000000000000000000001000,        //.
@@ -62,21 +51,17 @@ const long charMaps[64] PROGMEM = {
     0b1000101010001000101010001,        //X
     0b1000110001011100010000100,        //Y
     0b1111100001011101000011111,        //Z
-    0b0,        
-    0b0,        
-    0b0,        
-    0b0,        
-    0b0000000000000000000011111         //_
+    0b0000000000000000000011111        //[, but we're using it as a _
 };
 
 
 //message string storage, all strings are a max of 18 chars in length
 const char savedStrings[TOTAL_STRINGS][STRINGLENGTH] PROGMEM = {
-    "MERRY CHRISTMAS",
-    "HAPPY HOLIDAYS",
-    "HAPPY NEW YEAR",
-    "FROM, BLAKE",
-    "XMAS_V3 2016"
+    "MERRY+CHRISTMAS",
+    "HAPPY+HOLIDAYS",
+    "HAPPY+NEW YEAR",
+    "FROM,+BLAKE",
+    "XMAS[V3+2016"
 };
 
 byte currentStringLength = STRINGLENGTH;            //length of the currently selected message string

@@ -32,7 +32,7 @@
 
 
 //ANIM
-#define MAP_START      32
+#define MAP_START      43
 
 #define CHAR_WIDTH 5
 
