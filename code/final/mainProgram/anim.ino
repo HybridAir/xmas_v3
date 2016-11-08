@@ -55,7 +55,7 @@ const long charMaps[45] PROGMEM = {
 const char savedStrings[TOTAL_STRINGS][STRINGLENGTH] PROGMEM = {
     "MERRY/CHRISTMAS",
     "HAPPY/HOLIDAYS",
-    "HAPPY/NEW YEAR",
+    "HAPPY/NEW/YEAR",
     "FROM/BLAKE",
     "XMAS[V3/2016"
 };
