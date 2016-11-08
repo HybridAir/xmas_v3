@@ -1,9 +1,8 @@
 //main xmas_v3 program by HybridAir
-//compiles to 2040 prog, 50 ram
+//compiles to 2114 prog, 50 ram
 
-//#include <avr/sleep.h>
-//#include <avr/power.h>    // Power management
-//#include <avr/interrupt.h>
+#include <avr/sleep.h>
+#include <avr/interrupt.h>
 #include <util/delay.h>
 #include <avr/pgmspace.h>
 #include "mainProgram.h"
@@ -26,7 +25,7 @@ bool sleepEnabled = true;							//auto sleep enabled by default
 
 
 void setup() {
-    //ACSR |= _BV(ACD);                   			//disable the analog comparator	
+    ADCSRA &= ~ bit(ADEN);                          //disable the ADC
 	
 /* 	if((PINB & (1<<BUTTON))) {						//if the button is held during power up
 		sleepEnabled = false;						//disable auto sleep
@@ -49,7 +48,8 @@ void loop() {
         else {                              //if the button was just released
             //check how long it was held for
             if(millis() >= timer + SLEEP_DELAY) {
-                switchMessage();
+                //switchMessage();
+                sleep();
                 //sleep here, above is for testing
             }
             else if(millis() >= timer + ANIM_DELAY) {
@@ -74,7 +74,7 @@ void loop() {
 
 
 
-/* //puts the device to sleep
+//puts the device to sleep
 void sleep() {
 	DDRA = 0;      
     PORTA = 0;							//turn all LEDs off to save power
@@ -94,12 +94,12 @@ void sleep() {
     sei();                                  //enable interrupts
 	
 	switchMessage();
-} */
+}
 
 
 //the program goes here directly after waking up
-// ISR(PCINT1_vect) {
-// }
+ISR(PCINT1_vect) {
+}
 
 
 
