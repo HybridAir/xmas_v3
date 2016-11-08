@@ -27,9 +27,9 @@ bool sleepEnabled = true;							//auto sleep enabled by default
 void setup() {
     ADCSRA &= ~ bit(ADEN);                          //disable the ADC
 	
-/* 	if((PINB & (1<<BUTTON))) {						//if the button is held during power up
+	if((PINB & (1<<BUTTON))) {						//if the button is held during power up
 		sleepEnabled = false;						//disable auto sleep
-	} */
+	}
      
     switchMessage();
 }
@@ -67,9 +67,11 @@ void loop() {
     renderFrame();
     clearFrame();
     
-/*     if(sleepEnabled) {								//only check the sleep timer if auto sleeping is enabled
-		//sleepTimer();
-	} */
+    if(sleepEnabled) {								//only check the sleep timer if auto sleeping is enabled
+		if(millis() >= SLEEPTIME) {						//if the current time is greater than the sleeptime value
+            sleep();									//go to sleep
+        }
+	}
 }
 
 
@@ -100,11 +102,3 @@ void sleep() {
 //the program goes here directly after waking up
 ISR(PCINT1_vect) {
 }
-
-
-
-/* void sleepTimer() {
-	if(millis() >= SLEEPTIME) {						//if the current time is greater than the sleeptime value
-		sleep();									//go to sleep
-	}
-} */
