@@ -1,5 +1,5 @@
 //main xmas_v3 program by HybridAir
-//compiles to 1934 prog, 46 ram
+//compiles to 2040 prog, 50 ram
 
 //#include <avr/sleep.h>
 //#include <avr/power.h>    // Power management
@@ -20,7 +20,6 @@ byte frame[DISPLAY_HEIGHT] = {
 
 
 bool prevBtn = false;                           //last button state
-bool btnTimerFlag = false;							//lets the program know if the user is holding the button down
 unsigned long btnTimer = 0;							//time the button has been held down
 byte savedStringIndex = 0;                      //array index of the currently selected message string
 bool sleepEnabled = true;							//auto sleep enabled by default
@@ -40,37 +39,30 @@ unsigned long timer = 0;
 
 void loop() {
     
-    //checkBtn();
-    
     bool newBtn = (PINB & (1<<BUTTON));
     if(newBtn != prevBtn) {
         prevBtn = newBtn;
         
-        if(newBtn) {
-            
-            //if the button was just pressed
-            //start the hold timer
-            timer = millis();
+        if(newBtn) {                        //if the button was just pressed
+            timer = millis();               //start the hold timer
         }
-        
-        else {
-            //if the button was just released
+        else {                              //if the button was just released
             //check how long it was held for
-            
-            if(millis() >= timer + 100) {
-                 savedStringIndex++;
-            if(savedStringIndex >= TOTAL_STRINGS) {
-                savedStringIndex = 0;
+            if(millis() >= timer + SLEEP_DELAY) {
+                switchMessage();
+                //sleep here, above is for testing
             }
-            
-            switchMessage();
-            //need to add software debouncing
+            else if(millis() >= timer + ANIM_DELAY) {
+                savedStringIndex++;
+                if(savedStringIndex >= TOTAL_STRINGS) {
+                    savedStringIndex = 0;
+                }
+                switchMessage();
             }
         }
     }
     
-    
-    
+     
     showMessage();
     renderFrame();
     clearFrame();
@@ -80,54 +72,6 @@ void loop() {
 	} */
 }
 
-
-
-//gets the current button state, does not work when sleeping
-void checkBtn() {
-	byte newBtn = (PINB & (1<<BUTTON));								//get the current/new button state (1 or 0)
-	
-	if(newBtn != prevBtn) {											//if this new state is different from the last one
-		prevBtn = newBtn;											//record the new button state as the new previous one
-	
-		if(newBtn) {												//if the button just went from LOW to HIGH
-            
-			btnTimer = millis();									//get the new start time for the button timer
-			btnTimerFlag = true;									//start the button timer
-            
-		}
-		else {														//if the button just went from HIGH to LOW
-            
-			//the button has not been held long enough to go to sleep
-			//but it may also not have been held long enough to pass the debouncing test and switch the animation
-			
-			if(btnTimerFlag) {										//make sure the button timer is even running before we check that
-				//the above is needed for a dumb edge case when the button is released when waking up
-                
-					//unsigned long currentMillis2 = millis();
-/* 				if(currentMillis2 >= (btnTimer + 2000)) {			//if the button has been held for at least SLEEP_DELAY ms
-					btnTimerFlag = false;							//stop the button timer
-					//sleep();										//go to sleep
-                    switchMessage();
-				} */
-				if(millis() - btnTimer >= 100) {		//if the button has been HIGH for at least ANIM_DELAY ms
-				//else if(currentMillis2 - btnTimer > 25) {		//if the button has been HIGH for at least ANIM_DELAY ms
-					btnTimerFlag = false;							//stop the button timer
-					
-                    savedStringIndex++;
-                    if(savedStringIndex >= TOTAL_STRINGS) {
-                        savedStringIndex = 0;
-                    }
-                    
-                    switchMessage();
-                    
-				}
-				else {												//the button press failed the debounce test (not held long enough)
-					btnTimerFlag = false;							//stop the button timer
-				}
-			}
-		}
-	}
-}
 
 
 /* //puts the device to sleep
