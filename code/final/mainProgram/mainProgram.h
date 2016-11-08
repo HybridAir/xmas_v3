@@ -6,6 +6,7 @@
 #define ANIM_DELAY			25						//min ms the button needs to be held to change animations
 #define SLEEP_DELAY			1000					//min ms the button needs to be held to enable sleep mode
 #define SLEEPTIME			3600000					//time in ms to wait until auto sleeping (1 hour, 4 minutes slow)
+//#define SLEEPTIME			30000					//time in ms to wait until auto sleeping (1 hour, 4 minutes slow)
 
 #define F_CPU 8000000UL
 
@@ -32,7 +33,7 @@
 
 
 //ANIM
-#define MAP_START      43
+#define MAP_START      47
 
 #define CHAR_WIDTH 5
 

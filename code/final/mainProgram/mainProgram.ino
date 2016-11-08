@@ -1,5 +1,5 @@
 //main xmas_v3 program by HybridAir
-//compiles to 2076 prog, 55 ram
+//compiles to 2038 prog, 51 ram
 
 #include <avr/sleep.h>
 #include <avr/interrupt.h>
@@ -19,10 +19,10 @@ byte frame[DISPLAY_HEIGHT] = {
 
 
 bool prevBtn = false;                           //last button state
-unsigned long lastSleep = 0;							//time the button has been held down
 byte savedStringIndex = 0;                      //array index of the currently selected message string
 bool sleepEnabled = true;							//auto sleep enabled by default
 
+extern volatile unsigned long timer0_millis;
 
 void setup() {
     ADCSRA &= ~ bit(ADEN);                          //disable the ADC
@@ -68,8 +68,7 @@ void loop() {
     clearFrame();
     
     if(sleepEnabled) {								//only check the sleep timer if auto sleeping is enabled
-		if(millis() - lastSleep >= SLEEPTIME) {			//if the current time is greater than the sleeptime value
-            lastSleep = millis();                       //remember the last time we went to sleep
+		if(millis() >= SLEEPTIME) {			//if the current time is greater than the sleeptime value
             sleep();									//go to sleep
         }
 	}
@@ -90,6 +89,13 @@ void sleep() {
     sleep_cpu();                            //sleep
 
 	//wake up here
+    
+    //reset millis
+    noInterrupts();
+    timer0_millis = 0;
+    interrupts();
+    
+    
     cli();                                  //disable interrupts
     PCMSK1 &= ~_BV(PCINT10);                  //turn off PB5 as interrupt pin so it can be used for other things
     sleep_disable();                        //clear SE bit
