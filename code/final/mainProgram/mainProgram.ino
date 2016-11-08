@@ -36,25 +36,38 @@ void setup() {
     switchMessage();
 }
 
+unsigned long timer = 0;
 
 void loop() {
     
-    checkBtn();
+    //checkBtn();
     
-/*     bool newBtn = (PINB & (1<<BUTTON));
+    bool newBtn = (PINB & (1<<BUTTON));
     if(newBtn != prevBtn) {
         prevBtn = newBtn;
         
         if(newBtn) {
-            savedStringIndex++;
+            
+            //if the button was just pressed
+            //start the hold timer
+            timer = millis();
+        }
+        
+        else {
+            //if the button was just released
+            //check how long it was held for
+            
+            if(millis() >= timer + 100) {
+                 savedStringIndex++;
             if(savedStringIndex >= TOTAL_STRINGS) {
                 savedStringIndex = 0;
             }
             
             switchMessage();
             //need to add software debouncing
+            }
         }
-    } */
+    }
     
     
     
