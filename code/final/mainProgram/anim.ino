@@ -68,7 +68,7 @@ byte currentStringLength = STRINGLENGTH;            //length of the currently se
 char currentString[STRINGLENGTH];                   //the current string to be displayed
 
 bool restartString = true;
-int offset = 0;                                     //curent string location offset value, in pixels
+char offset = 0;                                     //curent string location offset value, in pixels
 
 //used for delay timing stuff
 unsigned long currentMillis = 0;
@@ -136,7 +136,7 @@ void drawString(int offset) {
     
     //this is the current character position in the string, but in pixel form
     //so instead of a string index position number, you get the pixel position
-    int currentChar = 0;
+    byte currentChar = 0;
     
     //but only if the offset is negative
     if (offset <= 0) {
@@ -147,12 +147,12 @@ void drawString(int offset) {
 
     byte x = 0;                 //the amount of chars that have been printed in this offset cycle
     byte space = 0;             //used for adding a 1px space between characters
-    int extra = 0;              //hell if I know what this does
+    char extra = 0;              //hell if I know what this does
     bool printing = true;
   
   
-    //don't waste time printing/drawing characters if it was established that there are none left?????
-    while(printing) {
+    //don't bother printing more than 3 chars at once, they wont fit and you'll waste cpu cycles
+    while(x <= 3) {
         
         //if we are done drawing the current character????????
         //if the offset and the size of all the currently drawn characers is higher than uh
@@ -184,21 +184,16 @@ void drawString(int offset) {
             }
         }
         x++;                //go on to the next character to display?
-        
-        //don't bother printing more than 3 chars at once, they wont fit and you'll waste cpu cycles
-            if(x >= 3) {
-            printing = false;
-        }
     }
 }
 
 
 //takes the specified character and draws it on the frame array
 //void drawChar(char theChar, int charOffset) {
-void drawChar(char theChar, int offset) {
+void drawChar(char theChar, char offset) {
     
     //by default, the characters are aligned to the right of the display, so this will fix that
-    int finalOffset = offset - PREOFFSET;
+    char finalOffset = offset - PREOFFSET;
 
     //get the specified character map out of progmem
     long currentCharMap = pgm_read_dword(&(charMaps[theChar - MAP_START]));

@@ -19,9 +19,10 @@ const byte ledGrid[NUM_LEDS][2] PROGMEM = {
 
 
 void clearFrame() {
-    for(byte i = 0; i < DISPLAY_HEIGHT; i++) {
-        frame[i] = 0;
-    }
+    //for(byte i = 0; i < DISPLAY_HEIGHT; i++) {
+        //frame[i] = 0;
+    //}
+    memset(frame,0,DISPLAY_HEIGHT);
 }
 
 
@@ -33,11 +34,12 @@ void renderFrame() {
         
         //reset all pins to inputs and LOW
         //CHANGE THIS LATER since other functions will need to use portA too
-        DDRA = 0;      
-        PORTA = 0;
+        //DDRA = 0;      
+        //PORTA = 0;
         
         //set this section's cathode pin as an output, its state is still low from before
         DDRA = (1<<i);
+        PORTA = 0;
         
         //go through each led in the display
         for(byte led = 0; led < NUM_LEDS; led++) {

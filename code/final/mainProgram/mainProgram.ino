@@ -1,5 +1,5 @@
 //main xmas_v3 program by HybridAir
-//compiles to 2132 prog, 56 ram
+//compiles to 2076 prog, 55 ram
 
 #include <avr/sleep.h>
 #include <avr/interrupt.h>
