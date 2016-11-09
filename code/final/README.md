@@ -1,1 +1,1 @@
-Final attiny compatible code goes here
+Final ATTiny24 compatible code
