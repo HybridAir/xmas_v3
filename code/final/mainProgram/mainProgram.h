@@ -14,13 +14,20 @@
 //DISPLAY
 //display section names with their cooresponding charpliex pins
 //F isn't used becuase AVR uses it for frequency stuff
-#define A PA0
+/* #define A PA0
 #define B PA1
 #define C PA2
 #define D PA3
 #define E PA4
 #define G PA5
-#define H PA6
+#define H PA6 */
+#define H PA0
+#define G PA1
+#define E PA2
+#define D PA3
+#define C PA4
+#define B PA5
+#define A PA6
 
 //total number of leds in the display
 #define NUM_LEDS 40
