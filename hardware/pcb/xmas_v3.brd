@@ -6,7 +6,7 @@
 <setting alwaysvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.05" unitdist="inch" unit="inch" style="dots" multiple="1" display="yes" altdistance="0.025" altunitdist="inch" altunit="inch"/>
+<grid distance="0.05" unitdist="inch" unit="mm" style="dots" multiple="1" display="yes" altdistance="0.025" altunitdist="inch" altunit="inch"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="2" name="Route2" color="1" fill="3" visible="no" active="no"/>
@@ -156,10 +156,30 @@
 </layers>
 <board>
 <plain>
-<wire x1="0" y1="0" x2="160" y2="0" width="0" layer="20"/>
 <wire x1="160" y1="0" x2="160" y2="100" width="0" layer="20"/>
 <wire x1="160" y1="100" x2="0" y2="100" width="0" layer="20"/>
-<wire x1="0" y1="100" x2="0" y2="0" width="0" layer="20"/>
+<wire x1="4.7625" y1="10.998521875" x2="4.7625" y2="5.4992625" width="0" layer="20"/>
+<wire x1="4.7625" y1="5.4992625" x2="9.525" y2="2.749628125" width="0" layer="20"/>
+<wire x1="9.525" y1="2.749628125" x2="14.287496875" y2="0" width="0" layer="20"/>
+<wire x1="14.287496875" y1="0" x2="19.049996875" y2="2.749628125" width="0" layer="20"/>
+<wire x1="19.049996875" y1="2.749628125" x2="23.812503125" y2="0" width="0" layer="20"/>
+<wire x1="23.812503125" y1="0" x2="28.575" y2="2.749628125" width="0" layer="20"/>
+<wire x1="28.575" y1="2.749628125" x2="33.3375" y2="5.4992625" width="0" layer="20"/>
+<wire x1="33.3375" y1="5.4992625" x2="33.3375" y2="10.998521875" width="0" layer="20"/>
+<wire x1="33.3375" y1="10.998521875" x2="38.1" y2="13.74815625" width="0" layer="20"/>
+<wire x1="38.1" y1="13.74815625" x2="38.1" y2="24.746678125" width="0" layer="20"/>
+<wire x1="38.1" y1="24.746678125" x2="33.3375" y2="27.49630625" width="0" layer="20"/>
+<wire x1="33.3375" y1="27.49630625" x2="33.3375" y2="32.995565625" width="0" layer="20"/>
+<wire x1="33.3375" y1="32.995565625" x2="28.575" y2="35.7452" width="0" layer="20"/>
+<wire x1="28.575" y1="35.7452" x2="23.812503125" y2="38.494828125" width="0" layer="20"/>
+<wire x1="23.812503125" y1="38.494828125" x2="19.050003125" y2="35.7452" width="0" layer="20"/>
+<wire x1="19.050003125" y1="35.7452" x2="14.287496875" y2="38.494828125" width="0" layer="20"/>
+<wire x1="14.287496875" y1="38.494828125" x2="9.525" y2="35.7452" width="0" layer="20"/>
+<wire x1="9.525" y1="35.7452" x2="4.7625" y2="32.995565625" width="0" layer="20"/>
+<wire x1="4.7625" y1="32.995565625" x2="4.7625" y2="27.49630625" width="0" layer="20"/>
+<wire x1="4.7625" y1="27.49630625" x2="0" y2="24.746678125" width="0" layer="20"/>
+<wire x1="0" y1="24.746678125" x2="0" y2="13.74815625" width="0" layer="20"/>
+<wire x1="0" y1="13.74815625" x2="4.7625" y2="10.998521875" width="0" layer="20"/>
 </plain>
 <libraries>
 <library name="Atmel_By_element14_Batch_1-00">
