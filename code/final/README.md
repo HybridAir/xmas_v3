@@ -1,1 +1,0 @@
-Final ATTiny24 compatible code
