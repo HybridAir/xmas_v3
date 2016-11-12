@@ -6,7 +6,7 @@
 <setting alwaysvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.1" unitdist="inch" unit="inch" style="dots" multiple="1" display="yes" altdistance="0.1" altunitdist="inch" altunit="inch"/>
+<grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="no" active="no"/>
 <layer number="2" name="Route2" color="1" fill="3" visible="no" active="no"/>
@@ -243,16 +243,14 @@ at 27/07/2012 14:02:49</description>
 <wire x1="-0.3048" y1="4.3688" x2="-2.0066" y2="4.3688" width="0" layer="51"/>
 <wire x1="-2.0066" y1="4.3688" x2="-2.0066" y2="-4.3688" width="0" layer="51"/>
 <wire x1="0.3048" y1="4.3688" x2="-0.3048" y2="4.3688" width="0" layer="51" curve="-180"/>
-<text x="-3.302" y="4.2418" size="1.27" layer="51" ratio="6" rot="SR0">*</text>
-<wire x1="3.7846" y1="-1.2446" x2="4.7752" y2="-1.2446" width="0.1524" layer="21"/>
 <wire x1="-1.2954" y1="-4.3688" x2="1.2954" y2="-4.3688" width="0.1524" layer="21"/>
 <wire x1="1.2954" y1="4.3688" x2="0.3048" y2="4.3688" width="0.1524" layer="21"/>
 <wire x1="0.3048" y1="4.3688" x2="-0.3048" y2="4.3688" width="0.1524" layer="21"/>
 <wire x1="-0.3048" y1="4.3688" x2="-1.2954" y2="4.3688" width="0.1524" layer="21"/>
 <wire x1="0.3048" y1="4.3688" x2="-0.3048" y2="4.3688" width="0.1524" layer="21" curve="-180"/>
-<text x="-3.302" y="4.2418" size="1.27" layer="21" ratio="6" rot="SR0">*</text>
 <text x="-4.2672" y="-7.4168" size="2.0828" layer="25" ratio="10" rot="SR0">&gt;NAME</text>
 <text x="-3.4544" y="7.4168" size="2.0828" layer="27" ratio="10" rot="SR0">&gt;VALUE</text>
+<circle x="-2.54" y="5.08" radius="0.334084375" width="0.127" layer="21"/>
 </package>
 </packages>
 <symbols>
@@ -7351,15 +7349,15 @@ Standard 1-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <part name="D38" library="adafruit" deviceset="LED" device="CHIP-LED0603"/>
 <part name="D39" library="adafruit" deviceset="LED" device="CHIP-LED0603"/>
 <part name="D40" library="adafruit" deviceset="LED" device="CHIP-LED0603"/>
-<part name="R1" library="resistor" deviceset="R-US_" device="R0603"/>
-<part name="R2" library="resistor" deviceset="R-US_" device="R0603"/>
-<part name="R3" library="resistor" deviceset="R-US_" device="R0603"/>
-<part name="R4" library="resistor" deviceset="R-US_" device="R0603"/>
-<part name="R5" library="resistor" deviceset="R-US_" device="R0603"/>
-<part name="R6" library="resistor" deviceset="R-US_" device="R0603"/>
-<part name="R7" library="resistor" deviceset="R-US_" device="R0603"/>
+<part name="R1" library="resistor" deviceset="R-US_" device="R0603" value="47"/>
+<part name="R2" library="resistor" deviceset="R-US_" device="R0603" value="47"/>
+<part name="R3" library="resistor" deviceset="R-US_" device="R0603" value="47"/>
+<part name="R4" library="resistor" deviceset="R-US_" device="R0603" value="47"/>
+<part name="R5" library="resistor" deviceset="R-US_" device="R0603" value="47"/>
+<part name="R6" library="resistor" deviceset="R-US_" device="R0603" value="47"/>
+<part name="R7" library="resistor" deviceset="R-US_" device="R0603" value="47"/>
 <part name="C1" library="SparkFun-Capacitors" deviceset="1.0UF-25V-+80/-20(0805)" device="&quot;" value="1.0uF"/>
-<part name="R8" library="SparkFun-Passives" deviceset="RESISTOR" device="0805-RES"/>
+<part name="R8" library="SparkFun-Passives" deviceset="RESISTOR" device="0805-RES" value="10k"/>
 <part name="C2" library="SparkFun-Capacitors" deviceset="CAP" device="0805"/>
 <part name="BAT1" library="SparkFun-Electromechanical" deviceset="BATTERY" device="20PTH"/>
 <part name="JP1" library="SparkFun-Connectors" deviceset="M01" device="PTH_NO_SILK_YES_STOP"/>

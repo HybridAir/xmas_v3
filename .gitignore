@@ -52,6 +52,7 @@ docs/
 media/
 hardware/design
 hardware/3d/output
+hardware/gerbers
 
 ### Eagle ###
 # Ignore list for Eagle, a PCB layout tool
@@ -65,7 +66,6 @@ hardware/3d/output
 # It contains a serial number and references to the file structure
 # on your computer.
 # comment the following line if you want to have your project file included.
-eagle.epf
 
 # Autorouter files
 *.pro
