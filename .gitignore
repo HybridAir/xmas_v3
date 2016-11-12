@@ -45,8 +45,17 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
-Adafruit-IS31FL3731-CharliePlex-LED-Breakout-PCB-master.zip
+
 old
 ref/
 docs/
 media/
+hardware/design
+*.s#?
+hardware/pcb/*.b#?
+*.l#?
+
+hardware/pcb/*.b#*
+*.s#*
+*.l#*
+hardware/pcb/eagle.epf
